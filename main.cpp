@@ -32,7 +32,7 @@ private:
     size_t size_;
 
     friend ostream& operator<<(ostream&, const MyVector&);
-    friend bool operator==(const MyVector&, const MyVector&);
+    friend bool operator==(const MyVector&, const MyVector&); //przekazuje dwie wartosci const i zwracam typ logiczny
 };
 
 
@@ -45,27 +45,27 @@ MyVector::MyVector(std::initializer_list<double> iLst) :
     elems_{new double[iLst.size()]},
     size_{iLst.size()}
 {
-    copy(iLst.begin(), iLst.end(), elems_);
+    copy(iLst.begin(), iLst.end(), elems_); //fcja ktora z listy bierze poczatek i koniec i kopiuj wszystko
 }
 
 MyVector::MyVector(const MyVector &other) :
-    elems_{new double[other.size_]},
+    elems_{new double[other.size_]}, //konstruktor kopiujacy - "alokujemy sobie nowa zone ;)
     size_{other.size_}
 {
-    memcpy(this->elems_, other.elems_, other.size_ * sizeof(double));
+    memcpy(this->elems_, other.elems_, other.size_ * sizeof(double)); //to tez fcja kopiujaca ale DOCZYTAJ O NIEJ
 }
 
-MyVector::MyVector(MyVector &&other) :
-    elems_{other.elems_}, // grab the elems
+MyVector::MyVector(MyVector &&other) : //w przypadku knstruktora przenoszacego ...
+    elems_{other.elems_}, // grab the elems / ... ustawiamy wskaznik dokladnie na to samo co jest w kopii - patrz rys
     size_{other.size_}
 {
-    other.elems_ = nullptr;
+    other.elems_ = nullptr; //podczas przenoszenia ustawiam null-pointer
     other.size_ = 0;
 }
 
 MyVector::~MyVector() {
     if (elems_ != nullptr) {
-        delete[] elems_;
+        delete[] elems_; //jak mamy pojedynczy element to mamy pojedynczy DELETE, a jak mamy tablice to mamy DELETE[] !!!!
     }
     elems_ = nullptr;
 }
@@ -93,7 +93,7 @@ MyVector& MyVector::operator=(MyVector &&other)
         this->elems_ = other.elems_;
         this->size_ = other.size_;
 
-        other.elems_ = nullptr;
+        other.elems_ = nullptr; //wskaznik ustawiony na nullpointer - to takie jakby wysypisko wrakow :)
         other.size_ = 0;
     }
 
